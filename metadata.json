@@ -1,0 +1,11 @@
+{
+  "name": "GrowLocal AI",
+  "description": "An AI-powered urban micro-farming and community resilience platform featuring Crop Advisor, Garden Planner, Local Marketplace, and IoT simulations.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

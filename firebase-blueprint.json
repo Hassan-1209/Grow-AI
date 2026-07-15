@@ -1,0 +1,31 @@
+{
+  "entities": {
+    "MarketplaceItem": {
+      "title": "MarketplaceItem",
+      "description": "An item for sale or trade in the marketplace.",
+      "type": "object",
+      "required": ["id", "title", "category", "price", "sellerEmail", "dateAdded"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string", "enum": ["seeds", "produce", "tools", "compost", "other"] },
+        "price": { "type": "string" },
+        "quantity": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "address": { "type": "string" },
+        "sellerName": { "type": "string" },
+        "sellerEmail": { "type": "string" },
+        "dateAdded": { "type": "string" },
+        "imageUrl": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/marketplaceItems/{itemId}": {
+      "schema": "MarketplaceItem",
+      "description": "Marketplace items collection."
+    }
+  }
+}

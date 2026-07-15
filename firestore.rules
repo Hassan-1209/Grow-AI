@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() { return request.auth != null; }
+    function isEmailVerified() { return request.auth.token.email_verified == true; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidMarketplaceItem(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'price', 'sellerEmail', 'dateAdded']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 256 &&
+             data.category in ['seeds', 'produce', 'tools', 'compost', 'other'] &&
+             data.price is string && data.price.size() <= 50 &&
+             data.sellerEmail is string && data.sellerEmail.size() <= 256 &&
+             data.dateAdded is string;
+    }
+
+    match /marketplaceItems/{itemId} {
+      allow list: if isSignedIn();
+      allow get: if isSignedIn();
+      allow create: if isSignedIn() && isEmailVerified() && isValidId(itemId) && isValidMarketplaceItem(incoming());
+      allow update: if isSignedIn() && isEmailVerified() && isValidMarketplaceItem(incoming()) && incoming().id == existing().id;
+      allow delete: if isSignedIn() && existing().sellerEmail == request.auth.token.email;
+    }
+  }
+}
